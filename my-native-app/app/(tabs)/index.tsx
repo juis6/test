@@ -20,13 +20,41 @@ const MOCK_POSTS: Post[] = [
 ];
 
 const FLAG_REASONS = ["Spam", "Inappropriate"];
+const API_URL = "http://192.168.0.104:3000/api";
 
 export default function App() {
   const [posts] = useState<Post[]>(MOCK_POSTS);
 
   const sendFlagToBackend = async (postId: string, reason: string) => {
-    console.log("Flag sent:", { postId, reason, userId: "user-123" });
-    // fetch
+    try {
+      const response = await fetch(`${API_URL}/flags`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          postId,
+          userId: "user-123",
+          reason,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 409) {
+          Alert.alert("Already Flagged", "You have already flagged this post");
+        } else {
+          Alert.alert("Error", data.error || "Failed to flag post");
+        }
+        return;
+      }
+
+      Alert.alert("Success", "Post has been flagged");
+    } catch (error) {
+      console.error("Error flagging post:", error);
+      Alert.alert("Error", "Failed to connect to server");
+    }
   };
 
   const onFlagPress = (postId: string) => {
@@ -37,7 +65,6 @@ export default function App() {
         text: reason,
         onPress: async () => {
           await sendFlagToBackend(postId, reason);
-          Alert.alert("Thank you", "Post has been flagged");
         },
       }))
     );
