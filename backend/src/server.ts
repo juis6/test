@@ -1,5 +1,6 @@
 import express, { Application } from "express";
 import cors from "cors";
+import morgan from "morgan";
 import flagRoutes from "./routes/FlagRoutes";
 
 const app: Application = express();
@@ -7,6 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+app.use(morgan("dev"));
 
 app.use("/api", flagRoutes);
 

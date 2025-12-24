@@ -20,7 +20,7 @@ const MOCK_POSTS: Post[] = [
 ];
 
 const FLAG_REASONS = ["Spam", "Inappropriate"];
-const API_URL = "http://192.168.0.104:3000/api";
+const API_URL = "http://192.168.1.110:3000/api";
 
 export default function App() {
   const [posts] = useState<Post[]>(MOCK_POSTS);
